@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/02 21:23:45 by kingstephan       #+#    #+#             */
-/*   Updated: 2026/01/07 18:03:50 by kingstephan      ###   ########.fr       */
+/*   Created: 2026/01/07 16:39:55 by kingstephan       #+#    #+#             */
+/*   Updated: 2026/01/07 17:58:29 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,37 +17,50 @@ const int Fixed::fractionalBits = 8;
 Fixed::Fixed()
 {
 	std::cout << "Default constructor called" << std::endl;
-	fixedValue = 0;
+	value = 0;
 };
+
+Fixed::Fixed(const int n)
+{
+	std::cout << "Int constructor called" << std::endl;
+	value = n * (1 << fractionalBits); 
+};
+
+Fixed::Fixed(const float f)
+{
+	std::cout << "Float constructor called" << std::endl;
+	value = roundf(f * (1 << fractionalBits));
+}
 
 Fixed::Fixed (const Fixed &other)
 {
 	std::cout << "Copy constructor called" << std::endl;
-	fixedValue = other.fixedValue;
+	value = other.value;
 };
 
-//definir le coportement de l'operateur = dans cette class
-//on assigne la valeur de l'objet en parametre a l'objet courant.
 Fixed& Fixed::operator=(const Fixed &other)
 {
 	std::cout << "Copy assignment operator called" << std::endl;
 	if (this == &other)
 		return (*this);
-	fixedValue = other.fixedValue;
+	value = other.value;
 	return (*this);
 };
 
-int	Fixed::getRawBits(void) const
+float Fixed::toFloat(void) const
 {
-	std::cout << "getRawBits member function called" << std::endl;
-	return (fixedValue);
+	return (static_cast<float>(value) / (1 << fractionalBits));
 };
 
-void	Fixed::setRawBits(int const raw)
+int	Fixed::toInt(void) const
 {
-	std::cout << "setRawBits member function called" << std::endl;
-	fixedValue = raw;
+	return ((value) / (1 << fractionalBits));
 };
+
+std::ostream& operator<<(std::ostream& out, const Fixed& fixed) {
+    out << fixed.toFloat();
+    return out;
+}; //fonction pour l'operateur <<. en parametre on a le flux de sortie et l'objet
 
 Fixed::~Fixed()
 {
